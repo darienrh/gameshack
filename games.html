@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Games - GameShack</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.23.5/babel.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* Spinning Banner */
+        .banner-container {
+            background: linear-gradient(135deg, #7dc3f5 0%, #f7a8bd 100%);
+            padding: 15px 0;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(125, 195, 245, 0.3);
+        }
+
+        .banner-track {
+            display: flex;
+            animation: scroll 20s linear infinite;
+            width: fit-content;
+        }
+
+        .banner-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #000000;
+            white-space: nowrap;
+            padding: 0 40px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        @keyframes scroll {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* Header */
+        .header {
+            background: rgba(0, 0, 0, 0.95);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #7dc3f5;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #7dc3f5 0%, #f7a8bd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 1px;
+            text-decoration: none;
+        }
+
+        .wip {
+            font-size: 12px;
+            color: #888;
+            font-weight: normal;
+            margin-left: 10px;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: #7dc3f5;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            border: 2px solid transparent;
+        }
+
+        .nav-link:hover {
+            background: rgba(125, 195, 245, 0.1);
+            border-color: #7dc3f5;
+        }
+
+        .nav-link.active {
+            background: #7dc3f5;
+            color: #000;
+        }
+
+        /* Under Construction Page */
+        .construction-container {
+            min-height: 70vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 20px;
+        }
+
+        .construction-icon {
+            font-size: 120px;
+            margin-bottom: 40px;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        .construction-title {
+            font-size: 64px;
+            background: linear-gradient(135deg, #7dc3f5 0%, #f7a8bd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .construction-text {
+            font-size: 20px;
+            color: #888;
+            text-align: center;
+            max-width: 600px;
+            line-height: 1.6;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            100% {
+                transform: translateY(0);
+            }
+
+            50% {
+                transform: translateY(-30px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .construction-title {
+                font-size: 48px;
+            }
+
+            .construction-icon {
+                font-size: 80px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        function App() {
+            const [currentUser, setCurrentUser] = useState(null);
+
+            useEffect(() => {
+                loadUser();
+            }, []);
+
+            const loadUser = async () => {
+                try {
+                    const userResult = await window.storage.get('current-user');
+                    if (userResult?.value) {
+                        setCurrentUser(JSON.parse(userResult.value));
+                    }
+                } catch (error) {
+                    console.log('No user logged in');
+                }
+            };
+
+            return (
+                <>
+                    <SpinningBanner username={currentUser?.username} />
+
+                    <div className="header">
+                        <a href="gameshack.html" className="logo">
+                            GAMESHACK <span className="wip">(work in progress)</span>
+                        </a>
+                        <div className="header-nav">
+                            <a className="nav-link" href="gameshack.html">
+                                Home
+                            </a>
+                            <a className="nav-link" href="recents.html">
+                                Recents
+                            </a>
+                            <a className="nav-link active">
+                                Games
+                            </a>
+                            {currentUser ? (
+                                <a className="nav-link" href="gameshack.html">
+                                    Logout
+                                </a>
+                            ) : (
+                                <>
+                                    <a className="nav-link" href="gameshack.html">
+                                        Login
+                                    </a>
+                                    <a className="nav-link" href="gameshack.html">
+                                        Sign Up
+                                    </a>
+                                </>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="construction-container">
+                        <div className="construction-icon">🎮</div>
+                        <h2 className="construction-title">Under Construction</h2>
+                        <p className="construction-text">
+                            The games catalogue is coming soon! We're building an awesome collection
+                            of all your favorite games. Check back later for a complete database of
+                            games to browse and review!
+                        </p>
+                    </div>
+                </>
+            );
+        }
+
+        function SpinningBanner({ username }) {
+            const message = username ? `Hi ${username}!` : 'Welcome to GameShack!';
+            const repeatedMessage = ` ${message} • `.repeat(20);
+
+            return (
+                <div className="banner-container">
+                    <div className="banner-track">
+                        <span className="banner-text">{repeatedMessage}</span>
+                        <span className="banner-text">{repeatedMessage}</span>
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+
+</html>

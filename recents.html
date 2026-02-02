@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recents - GameShack</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.23.5/babel.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #000000;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+
+        /* Spinning Banner */
+        .banner-container {
+            background: linear-gradient(135deg, #7dc3f5 0%, #f7a8bd 100%);
+            padding: 15px 0;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(125, 195, 245, 0.3);
+        }
+
+        .banner-track {
+            display: flex;
+            animation: scroll 20s linear infinite;
+            width: fit-content;
+        }
+
+        .banner-text {
+            font-size: 24px;
+            font-weight: bold;
+            color: #000000;
+            white-space: nowrap;
+            padding: 0 40px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        @keyframes scroll {
+            0% {
+                transform: translateX(0);
+            }
+
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* Header */
+        .header {
+            background: rgba(0, 0, 0, 0.95);
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px solid #7dc3f5;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            background: linear-gradient(135deg, #7dc3f5 0%, #f7a8bd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 1px;
+            text-decoration: none;
+        }
+
+        .wip {
+            font-size: 12px;
+            color: #888;
+            font-weight: normal;
+            margin-left: 10px;
+        }
+
+        .header-nav {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .nav-link {
+            color: #7dc3f5;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            border: 2px solid transparent;
+        }
+
+        .nav-link:hover {
+            background: rgba(125, 195, 245, 0.1);
+            border-color: #7dc3f5;
+        }
+
+        .nav-link.active {
+            background: #7dc3f5;
+            color: #000;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .section-title {
+            font-size: 48px;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #7dc3f5 0%, #f7a8bd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 50px;
+        }
+
+        .post-card {
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.9) 0%, rgba(30, 30, 30, 0.9) 100%);
+            padding: 25px;
+            border-radius: 12px;
+            border: 2px solid #333;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .post-card:hover {
+            border-color: #7dc3f5;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(125, 195, 245, 0.2);
+        }
+
+        .post-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+
+        .game-title {
+            font-size: 22px;
+            font-weight: bold;
+            color: #f7a8bd;
+            margin-bottom: 5px;
+        }
+
+        .post-meta {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .rating {
+            font-size: 24px;
+            color: #f7a8bd;
+        }
+
+        .post-text {
+            color: #ccc;
+            line-height: 1.6;
+            margin: 15px 0;
+        }
+
+        .post-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #333;
+        }
+
+        .username {
+            color: #7dc3f5;
+            font-weight: 600;
+        }
+
+        .timestamp {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            color: #666;
+        }
+
+        .empty-state h3 {
+            color: #888;
+            margin-bottom: 10px;
+            font-size: 24px;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 15px 20px;
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .posts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        function App() {
+            const [reviews, setReviews] = useState([]);
+            const [currentUser, setCurrentUser] = useState(null);
+
+            useEffect(() => {
+                loadData();
+            }, []);
+
+            const loadData = async () => {
+                try {
+                    const reviewsResult = await window.storage.get('all-reviews');
+                    if (reviewsResult?.value) {
+                        setReviews(JSON.parse(reviewsResult.value));
+                    }
+
+                    const userResult = await window.storage.get('current-user');
+                    if (userResult?.value) {
+                        setCurrentUser(JSON.parse(userResult.value));
+                    }
+                } catch (error) {
+                    console.log('No existing data found');
+                }
+            };
+
+            const sortedReviews = [...reviews].sort((a, b) =>
+                new Date(b.timestamp) - new Date(a.timestamp)
+            );
+
+            return (
+                <>
+                    <SpinningBanner username={currentUser?.username} />
+
+                    <div className="header">
+                        <a href="gameshack.html" className="logo">
+                            GAMESHACK <span className="wip">(work in progress)</span>
+                        </a>
+                        <div className="header-nav">
+                            <a className="nav-link" href="gameshack.html">
+                                Home
+                            </a>
+                            <a className="nav-link active">
+                                Recents
+                            </a>
+                            <a className="nav-link" href="games.html">
+                                Games
+                            </a>
+                            {currentUser ? (
+                                <a className="nav-link" href="gameshack.html">
+                                    Logout
+                                </a>
+                            ) : (
+                                <>
+                                    <a className="nav-link" href="gameshack.html">
+                                        Login
+                                    </a>
+                                    <a className="nav-link" href="gameshack.html">
+                                        Sign Up
+                                    </a>
+                                </>
+                            )}
+                        </div>
+                    </div>
+
+                    <div className="main-container">
+                        <h2 className="section-title">Recent Posts</h2>
+                        {sortedReviews.length > 0 ? (
+                            <div className="posts-grid">
+                                {sortedReviews.map(review => (
+                                    <PostCard key={review.id} review={review} />
+                                ))}
+                            </div>
+                        ) : (
+                            <div className="empty-state">
+                                <h3>No posts yet</h3>
+                                <p>Be the first to share a review!</p>
+                            </div>
+                        )}
+                    </div>
+                </>
+            );
+        }
+
+        function SpinningBanner({ username }) {
+            const message = username ? `Hi ${username}!` : 'Welcome to GameShack!';
+            const repeatedMessage = ` ${message} • `.repeat(20);
+
+            return (
+                <div className="banner-container">
+                    <div className="banner-track">
+                        <span className="banner-text">{repeatedMessage}</span>
+                        <span className="banner-text">{repeatedMessage}</span>
+                    </div>
+                </div>
+            );
+        }
+
+        function PostCard({ review }) {
+            const formatDate = (timestamp) => {
+                const date = new Date(timestamp);
+                const now = new Date();
+                const diff = now - date;
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const days = Math.floor(hours / 24);
+
+                if (days > 0) return `${days} day${days > 1 ? 's' : ''} ago`;
+                if (hours > 0) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+                return 'Just now';
+            };
+
+            return (
+                <div className="post-card">
+                    <div className="post-header">
+                        <div>
+                            <div className="game-title">{review.gameTitle}</div>
+                            <div className="post-meta">
+                                <span className="username">{review.username}</span>
+                            </div>
+                        </div>
+                        <div className="rating">
+                            {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
+                        </div>
+                    </div>
+                    <div className="post-text">{review.reviewText}</div>
+                    <div className="post-footer">
+                        <span className="timestamp">{formatDate(review.timestamp)}</span>
+                    </div>
+                </div>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+
+</html>
