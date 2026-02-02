@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -50,6 +51,7 @@
             0% {
                 transform: translateX(0);
             }
+
             100% {
                 transform: translateX(-50%);
             }
@@ -154,6 +156,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -228,6 +231,7 @@
                 opacity: 0;
                 transform: translate(-50%, -60%);
             }
+
             to {
                 opacity: 1;
                 transform: translate(-50%, -50%);
@@ -322,8 +326,13 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         /* Home Page */
@@ -528,6 +537,7 @@
         }
     </style>
 </head>
+
 <body>
     <div id="root"></div>
 
@@ -566,7 +576,7 @@
             const handleAuth = async (username, password) => {
                 try {
                     const userKey = `user-${username}`;
-                    
+
                     if (isLogin) {
                         const result = await window.storage.get(userKey);
                         if (!result) {
@@ -632,7 +642,7 @@
             return (
                 <>
                     <SpinningBanner username={currentUser?.username} />
-                    
+
                     <div className="header">
                         <div className="logo">
                             GAMESHACK <span className="wip">(work in progress)</span>
@@ -664,8 +674,8 @@
                     {showAuth && (
                         <>
                             <div className="modal-backdrop" onClick={() => setShowAuth(false)} />
-                            <AuthModal 
-                                isLogin={isLogin} 
+                            <AuthModal
+                                isLogin={isLogin}
                                 setIsLogin={setIsLogin}
                                 onAuth={handleAuth}
                                 onClose={() => setShowAuth(false)}
@@ -678,8 +688,8 @@
                     )}
 
                     {currentUser && currentPage === 'home' && (
-                        <HomePage 
-                            user={currentUser} 
+                        <HomePage
+                            user={currentUser}
                             reviews={reviews}
                             onAddReview={addReview}
                             onDeleteReview={deleteReview}
@@ -687,7 +697,7 @@
                     )}
 
                     {currentUser && currentPage === 'trending' && (
-                        <TrendingPage 
+                        <TrendingPage
                             reviews={reviews}
                             currentUser={currentUser}
                             onDeleteReview={deleteReview}
@@ -698,8 +708,8 @@
         }
 
         function SpinningBanner({ username }) {
-            const message = username ? `Hi ${username}!` : 'Welcome to GameShack!';
-            const repeatedMessage = ` ${message} • `.repeat(20);
+            const message = username ? `Hi ${username}!` : 'Hello Sarah! <3';
+            const repeatedMessage = ` ${message} • `.repeat(15);
 
             return (
                 <div className="banner-container">
@@ -764,7 +774,7 @@
                                 placeholder="Enter your password"
                             />
                         </div>
-                        <button type="submit" className="btn btn-primary" style={{width: '100%'}}>
+                        <button type="submit" className="btn btn-primary" style={{ width: '100%' }}>
                             {isLogin ? 'Login' : 'Sign Up'}
                         </button>
                     </form>
@@ -786,7 +796,7 @@
                 <div className="home-container">
                     <div className="user-header">
                         <div className="user-welcome">Welcome back, {user.username}!</div>
-                        <div style={{color: '#888'}}>{userReviews.length} reviews posted</div>
+                        <div style={{ color: '#888' }}>{userReviews.length} reviews posted</div>
                     </div>
 
                     <ReviewForm onSubmit={onAddReview} />
@@ -795,8 +805,8 @@
                     {userReviews.length > 0 ? (
                         <div className="posts-grid">
                             {userReviews.map(review => (
-                                <PostCard 
-                                    key={review.id} 
+                                <PostCard
+                                    key={review.id}
                                     review={review}
                                     currentUser={user}
                                     onDelete={onDeleteReview}
@@ -814,7 +824,7 @@
         }
 
         function TrendingPage({ reviews, currentUser, onDeleteReview }) {
-            const sortedReviews = [...reviews].sort((a, b) => 
+            const sortedReviews = [...reviews].sort((a, b) =>
                 new Date(b.timestamp) - new Date(a.timestamp)
             );
 
@@ -824,8 +834,8 @@
                     {sortedReviews.length > 0 ? (
                         <div className="posts-grid">
                             {sortedReviews.map(review => (
-                                <PostCard 
-                                    key={review.id} 
+                                <PostCard
+                                    key={review.id}
                                     review={review}
                                     currentUser={currentUser}
                                     onDelete={onDeleteReview}
@@ -887,7 +897,7 @@
                                         ★
                                     </span>
                                 ))}
-                                <span style={{marginLeft: '10px', color: '#888'}}>
+                                <span style={{ marginLeft: '10px', color: '#888' }}>
                                     {rating > 0 ? `${rating} out of 5` : 'Select a rating'}
                                 </span>
                             </div>
@@ -945,7 +955,7 @@
                                         onDelete(review.id);
                                     }
                                 }}
-                                style={{padding: '5px 12px', fontSize: '12px'}}
+                                style={{ padding: '5px 12px', fontSize: '12px' }}
                             >
                                 Delete
                             </button>
@@ -958,4 +968,5 @@
         ReactDOM.render(<App />, document.getElementById('root'));
     </script>
 </body>
+
 </html>
