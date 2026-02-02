@@ -251,10 +251,10 @@
                 </>
             );
         }
-
+        // Spinning Banner Component but i need to make this into a reusable component
         function SpinningBanner({ username }) {
             const message = username ? `Hi ${username}!` : 'Welcome to GameShack!';
-            const repeatedMessage = ` ${message} • `.repeat(20);
+            const repeatedMessage = ` ${message} • `.repeat(15);
 
             return (
                 <div className="banner-container">
