@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up - GameShack</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.23.5/babel.min.js"></script>
+    <script src="sharedheader.js"></script>
+    <style id="shared-styles"></style>
+    <script>
+        // Inject shared styles
+        document.getElementById('shared-styles').textContent = sharedStyles;
+    </script>
+    <style>
+        /* Auth Page Styles */
+        .auth-page {
+            min-height: calc(100vh - 160px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        .auth-card {
+            background: linear-gradient(135deg, rgba(20, 20, 20, 0.98) 0%, rgba(30, 30, 30, 0.98) 100%);
+            padding: 50px;
+            border-radius: 16px;
+            border: 2px solid #7dc3f5;
+            box-shadow: 0 0 50px rgba(125, 195, 245, 0.3);
+            max-width: 450px;
+            width: 100%;
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .auth-card h1 {
+            font-size: 42px;
+            background: linear-gradient(135deg, #7dc3f5 0%, #f7a8bd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .auth-card p {
+            color: #888;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: #7dc3f5;
+            font-weight: 500;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 2px solid #333;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #7dc3f5;
+            box-shadow: 0 0 20px rgba(125, 195, 245, 0.2);
+        }
+
+        .form-group input.valid {
+            border-color: #4caf50;
+        }
+
+        .form-group input.invalid {
+            border-color: #ff4444;
+        }
+
+        .form-group input::placeholder {
+            color: #555;
+        }
+
+        .password-requirements {
+            margin-top: 10px;
+            padding: 12px;
+            background: rgba(125, 195, 245, 0.1);
+            border: 1px solid #7dc3f5;
+            border-radius: 8px;
+            font-size: 13px;
+        }
+
+        .password-requirements h4 {
+            color: #7dc3f5;
+            margin-bottom: 8px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .requirement {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 5px;
+            color: #888;
+            transition: color 0.3s ease;
+        }
+
+        .requirement.met {
+            color: #4caf50;
+        }
+
+        .requirement .icon {
+            font-size: 14px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-primary {
+            background: #7dc3f5;
+            color: #000;
+            box-shadow: 0 0 20px rgba(125, 195, 245, 0.4);
+        }
+
+        .btn-primary:hover:not(:disabled) {
+            background: #6ab3e5;
+            transform: translateY(-2px);
+            box-shadow: 0 0 30px rgba(125, 195, 245, 0.6);
+        }
+
+        .btn-primary:disabled {
+            background: #444;
+            color: #666;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .error-message {
+            background: rgba(255, 68, 68, 0.1);
+            border: 2px solid #ff4444;
+            color: #ff6666;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .success-message {
+            background: rgba(76, 175, 80, 0.1);
+            border: 2px solid #4caf50;
+            color: #66ff66;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .auth-footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #888;
+            font-size: 14px;
+        }
+
+        .auth-footer a {
+            color: #f7a8bd;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .auth-footer a:hover {
+            color: #ff85a7;
+        }
+
+        @media (max-width: 768px) {
+            .auth-card {
+                padding: 30px;
+            }
+
+            .auth-card h1 {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        function App() {
+            const [username, setUsername] = useState('');
+            const [password, setPassword] = useState('');
+            const [confirmPassword, setConfirmPassword] = useState('');
+            const [error, setError] = useState('');
+            const [success, setSuccess] = useState('');
+            const [loading, setLoading] = useState(false);
+
+            // Check if already logged in
+            useEffect(() => {
+                checkCurrentUser();
+            }, []);
+
+            const checkCurrentUser = async () => {
+                try {
+                    const userResult = await window.storage.get('current-user');
+                    if (userResult?.value) {
+                        // Already logged in, redirect to home
+                        window.location.href = 'gameshack.html';
+                    }
+                } catch (error) {
+                    // Not logged in, stay on signup page
+                }
+            };
+
+            // Password validation
+            const passwordValidation = {
+                minLength: password.length >= 8,
+                hasUppercase: /[A-Z]/.test(password),
+                hasLowercase: /[a-z]/.test(password),
+                hasNumber: /[0-9]/.test(password)
+            };
+
+            const isPasswordValid = Object.values(passwordValidation).every(v => v);
+            const doPasswordsMatch = password === confirmPassword && confirmPassword !== '';
+
+            const handleSignup = async (e) => {
+                e.preventDefault();
+                setError('');
+                setSuccess('');
+                setLoading(true);
+
+                // Validation
+                if (!username || !password || !confirmPassword) {
+                    setError('Please fill in all fields');
+                    setLoading(false);
+                    return;
+                }
+
+                if (username.length < 3) {
+                    setError('Username must be at least 3 characters long');
+                    setLoading(false);
+                    return;
+                }
+
+                if (!isPasswordValid) {
+                    setError('Password does not meet requirements');
+                    setLoading(false);
+                    return;
+                }
+
+                if (!doPasswordsMatch) {
+                    setError('Passwords do not match');
+                    setLoading(false);
+                    return;
+                }
+
+                try {
+                    const userKey = `user-${username}`;
+
+                    // Check if username already exists
+                    try {
+                        await window.storage.get(userKey);
+                        setError('Username already exists. Please choose another one.');
+                        setLoading(false);
+                        return;
+                    } catch {
+                        // Username doesn't exist, proceed with signup
+                    }
+
+                    // Create user account
+                    await window.storage.set(userKey, JSON.stringify({
+                        username,
+                        password,
+                        createdAt: new Date().toISOString()
+                    }));
+
+                    // Log the user in
+                    await window.storage.set('current-user', JSON.stringify({ username }));
+
+                    // Show success message
+                    setSuccess('Account created successfully! Redirecting...');
+
+                    // Redirect to home page after 1.5 seconds
+                    setTimeout(() => {
+                        window.location.href = 'gameshack.html';
+                    }, 1500);
+
+                } catch (error) {
+                    console.error('Signup error:', error);
+                    setError('An error occurred. Please try again.');
+                    setLoading(false);
+                }
+            };
+
+            return (
+                <>
+                    <GameShackTop currentUser={null} activePage="home" />
+
+                    <div className="auth-page">
+                        <div className="auth-card">
+                            <h1>Sign Up</h1>
+                            <p>Join the GameShack community!</p>
+
+                            {error && (
+                                <div className="error-message">
+                                    {error}
+                                </div>
+                            )}
+
+                            {success && (
+                                <div className="success-message">
+                                    {success}
+                                </div>
+                            )}
+
+                            <form onSubmit={handleSignup}>
+                                <div className="form-group">
+                                    <label>Username</label>
+                                    <input
+                                        type="text"
+                                        value={username}
+                                        onChange={(e) => setUsername(e.target.value)}
+                                        placeholder="Choose a username (min 3 characters)"
+                                        disabled={loading}
+                                        className={username.length >= 3 ? 'valid' : username.length > 0 ? 'invalid' : ''}
+                                    />
+                                </div>
+
+                                <div className="form-group">
+                                    <label>Password</label>
+                                    <input
+                                        type="password"
+                                        value={password}
+                                        onChange={(e) => setPassword(e.target.value)}
+                                        placeholder="Create a strong password"
+                                        disabled={loading}
+                                        className={isPasswordValid ? 'valid' : password.length > 0 ? 'invalid' : ''}
+                                    />
+
+                                    {password && (
+                                        <div className="password-requirements">
+                                            <h4>Password Requirements:</h4>
+                                            <div className={`requirement ${passwordValidation.minLength ? 'met' : ''}`}>
+                                                <span className="icon">{passwordValidation.minLength ? '✓' : '○'}</span>
+                                                <span>At least 8 characters</span>
+                                            </div>
+                                            <div className={`requirement ${passwordValidation.hasUppercase ? 'met' : ''}`}>
+                                                <span className="icon">{passwordValidation.hasUppercase ? '✓' : '○'}</span>
+                                                <span>One uppercase letter</span>
+                                            </div>
+                                            <div className={`requirement ${passwordValidation.hasLowercase ? 'met' : ''}`}>
+                                                <span className="icon">{passwordValidation.hasLowercase ? '✓' : '○'}</span>
+                                                <span>One lowercase letter</span>
+                                            </div>
+                                            <div className={`requirement ${passwordValidation.hasNumber ? 'met' : ''}`}>
+                                                <span className="icon">{passwordValidation.hasNumber ? '✓' : '○'}</span>
+                                                <span>One number</span>
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <div className="form-group">
+                                    <label>Confirm Password</label>
+                                    <input
+                                        type="password"
+                                        value={confirmPassword}
+                                        onChange={(e) => setConfirmPassword(e.target.value)}
+                                        placeholder="Confirm your password"
+                                        disabled={loading}
+                                        className={doPasswordsMatch ? 'valid' : confirmPassword.length > 0 ? 'invalid' : ''}
+                                    />
+                                </div>
+
+                                <button
+                                    type="submit"
+                                    className="btn btn-primary"
+                                    disabled={loading || !isPasswordValid || !doPasswordsMatch || username.length < 3}
+                                >
+                                    {loading ? 'Creating Account...' : 'Sign Up'}
+                                </button>
+                            </form>
+
+                            <div className="auth-footer">
+                                Already have an account? <a href="login.html">Log in here</a>
+                            </div>
+                        </div>
+                    </div>
+                </>
+            );
+        }
+
+        ReactDOM.render(<App />, document.getElementById('root'));
+    </script>
+</body>
+
+</html>
